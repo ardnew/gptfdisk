@@ -42,6 +42,7 @@
 // Linux only....
 #ifdef __linux__
 #include <linux/fs.h>
+#include "utf16.h"
 #define DEFAULT_GPT_TYPE 0x8300
 #endif
 
