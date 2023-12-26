@@ -21,6 +21,8 @@ ARCHFLAGS+=-march=$(subst _,-,$(ARCH))
 ifeq ($(ARCH),$(strip $(shell $(CC) -v 2>&1 | \
   grep -oE 'arch-32=[^[:space:]]+' | cut -sd= -f2)))
 ARCHFLAGS+=-m32
+PKG_CONFIG_PATH:=$(subst $(eval ) ,:,$(realpath $(wildcard lib/*/lib/pkgconfig)))
+LDLIB:=$(dir $(firstword $(subst :, ,$(PKG_CONFIG_PATH))))
 endif
 
 LIB_NAMES=crc32 support guid gptpart mbrpart basicmbr mbr gpt bsd parttypes attributes diskio diskio-unix
@@ -40,7 +42,7 @@ LINKAGE:=-static -static-libgcc -static-libstdc++
 
 CFLAGS+=$(ARCHFLAGS) $(addprefix -D,$(DEFINES)) $(LINKAGE) -Wall
 CXXFLAGS+=$(CFLAGS)
-LDFLAGS+=$(ARCHFLAGS) $(LINKAGE)
+LDFLAGS+=$(ARCHFLAGS) $(addprefix -L,$(LDLIB)) $(LINKAGE)
 
 OUTPUT:=cgdisk gdisk sgdisk fixparts
 
